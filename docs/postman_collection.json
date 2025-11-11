@@ -50,7 +50,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\",\n  \"name\": \"Test User\",\n  \"role\": \"client\",\n  \"phone\": \"+1234567890\",\n  \"company\": \"Test Company\"\n}",
+          "raw": "{\n  \"email\": \"test{{$timestamp}}@example.com\",\n  \"password\": \"password123\",\n  \"name\": \"Test User\",\n  \"role\": \"client\",\n  \"phone\": \"+1234567890\",\n  \"company\": \"Test Company\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -82,6 +82,30 @@
               "});"
             ]
           }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "pm.collectionVariables.set('duplicateEmail', 'duplicate' + Date.now() + '@example.com');",
+              "",
+              "pm.sendRequest({",
+              "    url: pm.collectionVariables.get('baseUrl') + '/v1/auth/register',",
+              "    method: 'POST',",
+              "    header: {'Content-Type': 'application/json'},",
+              "    body: {",
+              "        mode: 'raw',",
+              "        raw: JSON.stringify({",
+              "            email: pm.collectionVariables.get('duplicateEmail'),",
+              "            password: 'password123',",
+              "            name: 'Duplicate User'",
+              "        })",
+              "    }",
+              "}, (err, res) => {});",
+              "",
+              "setTimeout(() => {}, 500);"
+            ]
+          }
         }
       ],
       "request": {
@@ -89,7 +113,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\",\n  \"name\": \"Test User\"\n}",
+          "raw": "{\n  \"email\": \"{{duplicateEmail}}\",\n  \"password\": \"password123\",\n  \"name\": \"Test User\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -121,6 +145,31 @@
               "});"
             ]
           }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const loginEmail = 'login' + Date.now() + '@example.com';",
+              "pm.collectionVariables.set('loginEmail', loginEmail);",
+              "",
+              "pm.sendRequest({",
+              "    url: pm.collectionVariables.get('baseUrl') + '/v1/auth/register',",
+              "    method: 'POST',",
+              "    header: {'Content-Type': 'application/json'},",
+              "    body: {",
+              "        mode: 'raw',",
+              "        raw: JSON.stringify({",
+              "            email: loginEmail,",
+              "            password: 'password123',",
+              "            name: 'Login Test User'",
+              "        })",
+              "    }",
+              "}, (err, res) => {});",
+              "",
+              "setTimeout(() => {}, 500);"
+            ]
+          }
         }
       ],
       "request": {
@@ -128,7 +177,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\"\n}",
+          "raw": "{\n  \"email\": \"{{loginEmail}}\",\n  \"password\": \"password123\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -167,7 +216,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"wrongpassword\"\n}",
+          "raw": "{\n  \"email\": \"{{loginEmail}}\",\n  \"password\": \"wrongpassword\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -238,7 +287,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"admin123456\",\n  \"name\": \"Admin User\",\n  \"role\": \"admin\"\n}",
+          "raw": "{\n  \"email\": \"admin{{$timestamp}}@example.com\",\n  \"password\": \"admin123456\",\n  \"name\": \"Admin User\",\n  \"role\": \"admin\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -402,7 +451,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"title\": \"Build new office\",\n  \"description\": \"Construction of new office building\",\n  \"priority\": \"high\",\n  \"dueDate\": \"2024-12-31\"\n}",
+          "raw": "{\n  \"title\": \"Build new office {{$timestamp}}\",\n  \"description\": \"Construction of new office building\",\n  \"priority\": \"high\",\n  \"dueDate\": \"2024-12-31\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -549,7 +598,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"email\": \"manager@example.com\",\n  \"password\": \"manager123\",\n  \"name\": \"Manager User\",\n  \"role\": \"manager\"\n}",
+          "raw": "{\n  \"email\": \"manager{{$timestamp}}@example.com\",\n  \"password\": \"manager123\",\n  \"name\": \"Manager User\",\n  \"role\": \"manager\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -674,7 +723,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"title\": \"Order to cancel\",\n  \"priority\": \"low\"\n}",
+          "raw": "{\n  \"title\": \"Order to cancel {{$timestamp}}\",\n  \"priority\": \"low\"\n}",
           "options": {
             "raw": {
               "language": "json"
