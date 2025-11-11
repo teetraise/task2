@@ -19,14 +19,14 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
     networks:
       - app-network
 
   service_users:
     build: service_users
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
       - MONGO_URI=mongodb://mongo:27017/construction
     depends_on:
       mongo:
@@ -37,7 +37,7 @@ services:
   service_orders:
     build: service_orders
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
       - MONGO_URI=mongodb://mongo:27017/construction
     depends_on:
       mongo:
