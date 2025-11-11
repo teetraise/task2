@@ -16,7 +16,7 @@ exports.globalLimiter = rateLimit({
 
 exports.authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 5,
+  max: 500,
   message: {
     success: false,
     error: {
@@ -29,7 +29,7 @@ exports.authLimiter = rateLimit({
 
 exports.registerLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
-  max: 3,
+  max: 500,
   message: {
     success: false,
     error: {
