@@ -1,8 +1,11 @@
 const rateLimit = require('express-rate-limit');
 
+// Higher limits for development/testing
+const isDev = process.env.NODE_ENV === 'development';
+
 exports.globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: isDev ? 10000 : 100,
   message: {
     success: false,
     error: {
@@ -16,7 +19,7 @@ exports.globalLimiter = rateLimit({
 
 exports.authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 500,
+  max: isDev ? 10000 : 5,
   message: {
     success: false,
     error: {
@@ -29,7 +32,7 @@ exports.authLimiter = rateLimit({
 
 exports.registerLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
-  max: 500,
+  max: isDev ? 10000 : 3,
   message: {
     success: false,
     error: {
