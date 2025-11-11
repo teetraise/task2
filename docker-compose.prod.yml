@@ -1,0 +1,64 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: construction_mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - app-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  api_gateway:
+    build: api_gateway
+    ports:
+      - "8000:8000"
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - api_gateway/.env.production
+    networks:
+      - app-network
+    depends_on:
+      - service_users
+      - service_orders
+    restart: unless-stopped
+
+  service_users:
+    build: service_users
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - service_users/.env.production
+    depends_on:
+      mongo:
+        condition: service_healthy
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  service_orders:
+    build: service_orders
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - service_orders/.env.production
+    depends_on:
+      mongo:
+        condition: service_healthy
+    networks:
+      - app-network
+    restart: unless-stopped
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongo_data:
