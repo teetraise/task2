@@ -28,8 +28,11 @@ app.use(requestId);
 app.use(pinoHttp({ logger }));
 app.use(express.json());
 
-// Global rate limiting
-app.use(globalLimiter);
+// Global rate limiting (disabled in development)
+const isDevelopment = process.env.NODE_ENV === 'development';
+if (!isDevelopment) {
+  app.use(globalLimiter);
+}
 
 // Circuit breaker configuration
 const circuitOptions = {
@@ -97,12 +100,12 @@ const proxyRequest = async (circuit, serviceUrl, req, res) => {
   }
 };
 
-// Auth routes with rate limiting
-app.post('/v1/auth/register', registerLimiter, (req, res) => 
+// Auth routes with rate limiting (disabled in development)
+app.post('/v1/auth/register', isDevelopment ? [] : registerLimiter, (req, res) =>
   proxyRequest(usersCircuit, USERS_SERVICE_URL, req, res)
 );
 
-app.post('/v1/auth/login', authLimiter, (req, res) => 
+app.post('/v1/auth/login', isDevelopment ? [] : authLimiter, (req, res) =>
   proxyRequest(usersCircuit, USERS_SERVICE_URL, req, res)
 );
 
